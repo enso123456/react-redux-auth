@@ -1,6 +1,6 @@
-import React, {Component} from "react"
-import {connect} from "react-redux"
-import {Link} from "react-router"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router";
 
 class Header extends Component {
   renderLinks() {
@@ -11,7 +11,7 @@ class Header extends Component {
             Sign Out
           </Link>
         </li>
-      )
+      );
     } else {
       return [
         <li className="nav-item" key={0}>
@@ -24,7 +24,7 @@ class Header extends Component {
             Sign Up
           </Link>
         </li>
-      ]
+      ];
     }
   }
 
@@ -32,18 +32,18 @@ class Header extends Component {
     return (
       <nav className="navbar navbar-light">
         <Link to="/" className="navbar-brand">
-          ReduxAuth
+          <img src="https://wcdn.wavecell.com/wp-content/themes/wavecell/img/logo-v2.svg" />
         </Link>
         <ul className="nav navbar-nav">{this.renderLinks()}</ul>
       </nav>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated
-  }
+  };
 }
 
-export default connect(mapStateToProps)(Header)
+export default connect(mapStateToProps)(Header);

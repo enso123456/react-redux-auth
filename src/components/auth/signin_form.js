@@ -1,6 +1,8 @@
-import React, {Component} from "react"
-import {reduxForm, Field} from "redux-form"
-import InputField from "./input_field"
+import React, { Component } from "react";
+import { reduxForm, Field } from "redux-form";
+import { Link } from "react-router";
+import InputField from "./input_field";
+import styles from "./styles/form";
 
 class SigninForm extends Component {
   renderAlert() {
@@ -9,48 +11,54 @@ class SigninForm extends Component {
         <div className="alert alert-danger">
           <strong>Ooops! </strong> {this.props.errorMessage}
         </div>
-      )
+      );
     }
   }
 
   render() {
     // helper from reduxForm
-    const {handleSubmit, onSubmit} = this.props
+    const { handleSubmit, onSubmit } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <fieldset className="form-group">
-          <label>Email: </label>
-          <div>
-            <Field
-              name="email"
-              component={props => <InputField {...props} />}
-              type="text"
-              placeholder="Email"
-            />
-          </div>
-        </fieldset>
-        <fieldset className="form-group">
-          <label>password: </label>
-          <div>
-            <Field
-              name="password"
-              component={props => <InputField {...props} />}
-              type="password"
-              placeholder="Password"
-            />
-          </div>
-        </fieldset>
-        {this.renderAlert()}
-        <button className="btn btn-primary" type="submit">
-          Sign in
-        </button>
-      </form>
-    )
+      <div style={styles.form}>
+        <form onSubmit={handleSubmit(onSubmit)} style={styles.formBody}>
+          <fieldset>
+            <label style={styles.label}>Username or email address</label>
+            <div style={styles.inputBlock}>
+              <Field
+                name="email"
+                component={props => <InputField {...props} />}
+                type="text"
+                placeholder="Email"
+              />
+            </div>
+          </fieldset>
+          <fieldset>
+            <label style={styles.label}>Password: </label>
+            <div style={styles.inputBlock}>
+              <Field
+                name="password"
+                component={props => <InputField {...props} />}
+                type="password"
+                placeholder="Password"
+              />
+            </div>
+          </fieldset>
+          {this.renderAlert()}
+          <button style={styles.button} className="btn" type="submit">
+            Sign in
+          </button>
+        </form>
+
+        <p style={styles.callout}>
+          <Link to="/signup">Create an account.</Link>
+        </p>
+      </div>
+    );
   }
 }
 
 // first config the component
 export default reduxForm({
   form: "signin"
-})(SigninForm)
+})(SigninForm);
