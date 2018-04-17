@@ -1,8 +1,25 @@
 import axios from "axios";
 import { browserHistory } from "react-router";
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGES } from "./types";
+import {
+  AUTH_USER,
+  UNAUTH_USER,
+  AUTH_ERROR,
+  FETCH_MESSAGES,
+  FETCH_MOBILE_INFO
+} from "./types";
+import { API_URL, MOBILE_API_URL, MOBILE_MASHAPE_KEY } from "../constants";
 
-const API_URL = "https://test-node-server-wavecell.herokuapp.com";
+export const getMobileInfo = number => dispatch => {
+  return axios
+    .get(`${MOBILE_API_URL}/getInfo?mobno=${number}`, {
+      headers: {
+        "X-Mashape-Key": MOBILE_MASHAPE_KEY
+      }
+    })
+    .then(resp => {
+      dispatch({ type: FETCH_MOBILE_INFO, payload: resp.data });
+    });
+};
 
 export const signinUser = ({ email, password }) => dispatch => {
   axios
