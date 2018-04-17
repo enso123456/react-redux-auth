@@ -1,49 +1,92 @@
+import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as Actions from "../../actions";
+import styles from "./styles";
 
 class Search extends Component {
   state = {
     input: "",
-    data: {}
+    data: {},
+    isSearching: false,
+    showAlert: false
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      data: nextProps.result
+    return this.setState({
+      data: nextProps.result,
+      isSearching: false
     });
   }
 
   onSearch = () => {
+    this.setState({ isSearching: true, showAlert: false });
     if (this.state.input) {
       setTimeout(() => {
-        this.props.getMobileInfo(this.state.input);
+        this.props.getMobileInfo(this.state.input, resp => {
+          if (resp) {
+            this.setState({
+              showAlert: true,
+              isSearching: false
+            });
+          }
+        });
       }, 2000);
     }
   };
 
+  renderAlert() {
+    if (this.state.input.length !== 10) {
+      return (
+        <div className="alert alert-danger">
+          <strong>
+            Sorry! We can't find the information from your search.{" "}
+          </strong>
+        </div>
+      );
+    }
+  }
+
   render() {
+    const { data, isSearching, showAlert } = this.state;
+
     return (
-      <div className="col-md-6">
-        <div className={"form-group row"}>
-          <label className={"col-sm-3 col-form-label"}>Mobile No.</label>
-          <div className={"col-sm-9"}>
+      <div>
+        <div style={styles.container}>
+          <div style={styles.inputGroup}>
             <input
-              type="text"
+              type="number"
               className={"form-control"}
+              style={styles.inputText}
               placeholder={"Mobile Number"}
               onChange={e => this.setState({ input: e.target.value })}
             />
-          </div>
-        </div>
-        <button
-          className={"btn btn-success pull-right"}
-          onClick={this.onSearch}
-        >
-          Search
-        </button>
+            <p style={styles.info}>Enter a 10 digit mobile number.</p>
 
-        {this.state.data && JSON.stringify(this.state.data)}
+            {showAlert && this.renderAlert()}
+          </div>
+          <button
+            className={"btn btn-success"}
+            style={styles.btn}
+            onClick={this.onSearch}
+          >
+            Search
+          </button>
+        </div>
+
+        {isSearching && <div id="html-spinner" />}
+
+        {!_.isEmpty(data) &&
+          !isSearching && (
+            <div className={"card"}>
+              <div className={"container"}>
+                <p>Provider: {data.Provider}</p>
+                <p>Service {data.Service}</p>
+                <p>Series: {data.Series}</p>
+                <p>Number: {data.Number}</p>
+              </div>
+            </div>
+          )}
       </div>
     );
   }
@@ -51,7 +94,7 @@ class Search extends Component {
 
 function mapStateToProps(state) {
   return {
-    result: state.search
+    result: state.search.result
   };
 }
 

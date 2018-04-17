@@ -5,11 +5,12 @@ import {
   UNAUTH_USER,
   AUTH_ERROR,
   FETCH_MESSAGES,
-  FETCH_MOBILE_INFO
+  FETCH_MOBILE_INFO,
+  CLEAR_MOBILE_INFO
 } from "./types";
 import { API_URL, MOBILE_API_URL, MOBILE_MASHAPE_KEY } from "../constants";
 
-export const getMobileInfo = number => dispatch => {
+export const getMobileInfo = (number, cb) => dispatch => {
   return axios
     .get(`${MOBILE_API_URL}/getInfo?mobno=${number}`, {
       headers: {
@@ -18,6 +19,10 @@ export const getMobileInfo = number => dispatch => {
     })
     .then(resp => {
       dispatch({ type: FETCH_MOBILE_INFO, payload: resp.data });
+    })
+    .catch(err => {
+      dispatch({ type: CLEAR_MOBILE_INFO });
+      cb(500);
     });
 };
 
@@ -29,8 +34,8 @@ export const signinUser = ({ email, password }) => dispatch => {
       dispatch({ type: AUTH_USER });
       // - save the jwt token
       localStorage.setItem("token", response.data.token);
-      // - redirect to the route '/feature'
-      browserHistory.push("/feature");
+      // - redirect to the route '/search'
+      browserHistory.push("/search");
     })
     .catch(() => {
       // - show an error to the user
@@ -45,8 +50,8 @@ export const signupUser = ({ username, email, password }) => dispatch => {
       dispatch({ type: AUTH_USER });
       // - save the jwt token
       localStorage.setItem("token", response.data.token);
-      // - redirect to the route '/feature'
-      browserHistory.push("/feature");
+      // - redirect to the route '/search'
+      browserHistory.push("/search");
     })
     .catch(error => {
       dispatch(authError(error.response.data.error));

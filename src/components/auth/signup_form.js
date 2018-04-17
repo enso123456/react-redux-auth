@@ -15,9 +15,7 @@ class SignoutForm extends Component {
   }
 
   render() {
-    // helper from reduxForm
     const { handleSubmit, onSubmit } = this.props;
-
     return (
       <div className={"col-md-6"}>
         <form onSubmit={handleSubmit(onSubmit)}>
